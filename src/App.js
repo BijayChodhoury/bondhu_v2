@@ -9,11 +9,9 @@ function App() {
   const [listening, setListening] = useState(false);
   const [response, setResponse] = useState('')
 
-  const apiKey = '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'; // Replace with your actual API key
-
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`,
+    'Authorization': `Bearer ${process.env.REACT_APP_CHATGPT_API_KEY}`,
   };
 
   useEffect(() => {
@@ -51,7 +49,7 @@ function App() {
   }, [listening]);
 
   useEffect(() => {
-    if ({ transcript } !== "") {
+    if ({ transcript } !== '') {
       const data = {
         model: 'gpt-3.5-turbo',
         messages: [
@@ -59,18 +57,18 @@ function App() {
             role: 'user',
             content: transcript
           }
-        ]
+        ],
+        temperature: 0.7
       };
-      // axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
-      //   .then(response => {
-      //     console.log(response.data.choices[0].message.content);
-      //     let api_response_text = response.data.choices[0].message.content
-      //     setResponse(api_response_text)
-
-      //   })
-      //   .catch(error => {
-      //     console.error('Error:', error);
-      //   });
+      axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
+        .then(response => {
+          console.log(response.data.choices[0].message.content);
+          let api_response_text = response.data.choices[0].message.content
+          setResponse(api_response_text)
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       setResponse('its not completed yet')
     }
   }, [transcript])
